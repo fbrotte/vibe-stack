@@ -1,0 +1,15 @@
+import { Controller, Get, Inject } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { AppService } from './app.service';
+
+@ApiTags('Health')
+@Controller()
+export class AppController {
+  constructor(@Inject(AppService) private readonly appService: AppService) {}
+
+  @Get('health')
+  @ApiOperation({ summary: 'Health check endpoint' })
+  getHealth() {
+    return this.appService.getHealth();
+  }
+}

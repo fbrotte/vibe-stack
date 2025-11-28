@@ -1,0 +1,31 @@
+import { Module, forwardRef } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { AuthTrpc } from './auth.trpc';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { UsersModule } from '../users/users.module';
+import { TrpcModule } from '../../trpc/trpc.module';
+
+@Module({
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: {
+          expiresIn: configService.get('JWT_EXPIRES_IN', '15m'),
+        },
+      }),
+    }),
+    UsersModule,
+    forwardRef(() => TrpcModule),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, AuthTrpc, JwtStrategy],
+  exports: [AuthService, AuthTrpc, JwtStrategy, PassportModule],
+})
+export class AuthModule {}
