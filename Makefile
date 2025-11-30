@@ -1,4 +1,4 @@
-.PHONY: help setup dev dev-api dev-web docker-up docker-up-llm docker-up-observability docker-up-full docker-down docker-reset db-migrate db-seed db-studio db-reset logs clean env-check generate-secret test test-api test-web test-cov
+.PHONY: help setup dev dev-api dev-web docker-up docker-up-llm docker-down docker-reset db-migrate db-seed db-studio db-reset logs clean env-check generate-secret test test-api test-web test-cov
 
 help: ## Show this help message
 	@echo "Available commands:"
@@ -25,25 +25,15 @@ dev-web: ## Start frontend only
 	@echo "Starting web server..."
 	@cd apps/web && bun run dev
 
-docker-up: ## Start Docker services (postgres + redis)
-	@echo "Starting Docker services..."
-	docker-compose up -d postgres redis
-	@echo "Services started"
+docker-up: ## Start base services (postgres + redis)
+	@echo "Starting base Docker services..."
+	docker-compose up -d
+	@echo "Base services started"
 
-docker-up-llm: ## Start Docker services with LiteLLM
-	@echo "Starting Docker services with LiteLLM..."
-	docker-compose --profile llm up -d
+docker-up-llm: ## Start with LiteLLM (base + litellm)
+	@echo "Starting with LiteLLM..."
+	docker-compose -f docker-compose.yml -f docker-compose.ai.yml up -d
 	@echo "Services started with LiteLLM"
-
-docker-up-observability: ## Start Docker services with Langfuse
-	@echo "Starting Docker services with Langfuse..."
-	docker-compose --profile observability up -d
-	@echo "Services started with Langfuse"
-
-docker-up-full: ## Start all Docker services (postgres + redis + litellm + langfuse)
-	@echo "Starting all Docker services..."
-	docker-compose --profile full up -d
-	@echo "All services started"
 
 docker-down: ## Stop all Docker services
 	@echo "Stopping Docker services..."

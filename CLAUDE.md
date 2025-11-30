@@ -17,7 +17,8 @@
 
 ```bash
 make dev              # Lance le projet
-make docker-up        # Lance postgres + redis
+make docker-up        # Lance postgres + redis (base)
+make docker-up-llm    # Lance base + litellm
 make db-migrate       # Migrations Prisma
 make db-studio        # Interface BDD
 make test             # Lance tous les tests

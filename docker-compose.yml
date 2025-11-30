@@ -32,51 +32,6 @@ services:
       timeout: 5s
       retries: 5
 
-  litellm:
-    image: ghcr.io/berriai/litellm:main-latest
-    container_name: template-dev-litellm
-    restart: unless-stopped
-    profiles:
-      - llm
-      - full
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./infrastructure/litellm/config.yaml:/app/config.yaml:ro
-    environment:
-      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:-sk-1234}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-    command: ["--config", "/app/config.yaml", "--port", "4000"]
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  langfuse:
-    image: langfuse/langfuse:latest
-    container_name: template-dev-langfuse
-    restart: unless-stopped
-    profiles:
-      - observability
-      - full
-    ports:
-      - "3001:3000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/langfuse
-      NEXTAUTH_URL: http://localhost:3001
-      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET:-changeme-secret-for-langfuse}
-      SALT: ${LANGFUSE_SALT:-changeme-salt-for-langfuse}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/public/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
 volumes:
   postgres-data:
   redis-data:
