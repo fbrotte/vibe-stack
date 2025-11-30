@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { LlmModule } from './modules/llm/llm.module';
 import { PythonModule } from './modules/python/python.module';
+import { LoggerModule } from './modules/logger/logger.module';
 // import { QueueModule } from './modules/queue/queue.module'; // Uncomment to enable
 import { TrpcModule } from './trpc/trpc.module';
 
@@ -22,7 +23,7 @@ import { TrpcModule } from './trpc/trpc.module';
         try {
           return EnvSchema.parse(config);
         } catch (error) {
-          console.error('❌ Invalid environment variables:', error);
+          console.error('Invalid environment variables:', error);
           process.exit(1);
         }
       },
@@ -33,6 +34,7 @@ import { TrpcModule } from './trpc/trpc.module';
         limit: 10,
       },
     ]),
+    LoggerModule,
     PrismaModule,
     AuthModule,
     UsersModule,
