@@ -32,6 +32,9 @@ export const EnvSchema = z.object({
     .transform((val) => val === 'true')
     .default('false'),
 
+  // Logging
+  LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']).default('info'),
+
   // Server
   PORT: z.string().default('3000'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
