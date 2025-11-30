@@ -24,6 +24,10 @@ export class TrpcService {
   router = this.trpc.router;
   mergeRouters = this.trpc.mergeRouters;
 
+  /**
+   * Procedure that requires authentication.
+   * Use for endpoints that any logged-in user can access.
+   */
   protectedProcedure = this.trpc.procedure.use(async (opts) => {
     const { ctx } = opts;
 
@@ -37,6 +41,25 @@ export class TrpcService {
         user: ctx.user,
       },
     });
+  });
+
+  /**
+   * Procedure that requires ADMIN role.
+   * Use for admin-only endpoints.
+   *
+   * @example
+   * adminDashboard: this.trpc.adminProcedure.query(() => {
+   *   return { stats: ... };
+   * })
+   */
+  adminProcedure = this.protectedProcedure.use(async (opts) => {
+    if (opts.ctx.user.role !== 'ADMIN') {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Admin access required',
+      });
+    }
+    return opts.next(opts);
   });
 
   private getErrorMessage(error: TRPCError): string {
