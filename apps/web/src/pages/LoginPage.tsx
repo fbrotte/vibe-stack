@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { trpc } from '@/lib/trpc';
-import { authStorage } from '@/lib/auth';
+import { useAuthStore } from '@/stores/auth.store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const setAuth = useAuthStore((state) => state.setAuth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const loginMutation = trpc.auth.login.useMutation({
     onSuccess: (data) => {
-      authStorage.setAuth(data);
+      setAuth(data);
       navigate('/dashboard');
     },
     onError: (error) => {

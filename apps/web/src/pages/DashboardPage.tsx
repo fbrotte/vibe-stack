@@ -1,19 +1,32 @@
 import { useNavigate } from 'react-router-dom';
 import { trpc } from '@/lib/trpc';
-import { authStorage } from '@/lib/auth';
+import { useAuthStore, useUser } from '@/stores/auth.store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const user = authStorage.getUser();
+  const user = useUser();
+  const logout = useAuthStore((state) => state.logout);
+  const refreshToken = useAuthStore((state) => state.refreshToken);
 
   const { data: userData, isLoading } = trpc.auth.me.useQuery();
   const { data: users } = trpc.users.list.useQuery();
 
+  const logoutMutation = trpc.auth.logout.useMutation({
+    onSettled: () => {
+      logout();
+      navigate('/login');
+    },
+  });
+
   const handleLogout = () => {
-    authStorage.clearAuth();
-    navigate('/login');
+    if (refreshToken) {
+      logoutMutation.mutate({ refreshToken });
+    } else {
+      logout();
+      navigate('/login');
+    }
   };
 
   return (
@@ -26,8 +39,8 @@ export default function DashboardPage() {
               <span className="text-sm text-muted-foreground">
                 {user?.name} ({user?.role})
               </span>
-              <Button variant="outline" onClick={handleLogout}>
-                Logout
+              <Button variant="outline" onClick={handleLogout} disabled={logoutMutation.isPending}>
+                {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
               </Button>
             </div>
           </div>

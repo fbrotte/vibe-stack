@@ -1,10 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { httpBatchLink } from '@trpc/client';
 import { BrowserRouter } from 'react-router-dom';
-import { trpc } from './lib/trpc';
-import { authStorage } from './lib/auth';
+import { trpc, createTrpcClient } from './lib/trpc';
 import App from './App';
 import './index.css';
 
@@ -12,25 +10,22 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      retry: (failureCount, error) => {
+        // Don't retry on 401/403 errors
+        if (error instanceof Error && error.message.includes('UNAUTHORIZED')) {
+          return false;
+        }
+        return failureCount < 3;
+      },
+      staleTime: 1000 * 60, // 1 minute
+    },
+    mutations: {
+      retry: false,
     },
   },
 });
 
-const trpcClient = trpc.createClient({
-  links: [
-    httpBatchLink({
-      url: '/trpc',
-      headers() {
-        const token = authStorage.getToken();
-        return token
-          ? {
-              authorization: `Bearer ${token}`,
-            }
-          : {};
-      },
-    }),
-  ],
-});
+const trpcClient = createTrpcClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -41,5 +36,5 @@ createRoot(document.getElementById('root')!).render(
         </BrowserRouter>
       </QueryClientProvider>
     </trpc.Provider>
-  </StrictMode>
+  </StrictMode>,
 );
