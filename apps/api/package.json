@@ -12,6 +12,7 @@
     "test:cov": "vitest run --coverage"
   },
   "dependencies": {
+    "@langfuse/openai": "^4.4.2",
     "@nestjs/common": "^10.4.15",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.4.15",
@@ -27,6 +28,7 @@
     "bullmq": "^5.31.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "langfuse": "^3.38.6",
     "nestjs-zod": "^5.0.1",
     "openai": "^4.77.3",
     "passport": "^0.7.0",
