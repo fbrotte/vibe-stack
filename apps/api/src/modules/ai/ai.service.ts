@@ -2,9 +2,9 @@ import { Injectable, Logger, Inject, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
 import { PostgresSaver } from '@langchain/langgraph-checkpoint-postgres';
-import { CallbackHandler } from '@langfuse/langchain';
 import type { BaseMessage } from '@langchain/core/messages';
 import { createChatModel, createEmbeddings, createCheckpointer } from './providers';
+import { LangfuseService } from '../langfuse';
 
 export interface ChatCompletionParams {
   model?: string;
@@ -22,13 +22,6 @@ export interface EmbeddingParams {
   userId?: string;
 }
 
-export interface LangfuseHandlerOptions {
-  sessionId?: string;
-  userId?: string;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-}
-
 @Injectable()
 export class AiService implements OnModuleInit {
   private readonly logger = new Logger(AiService.name);
@@ -36,20 +29,15 @@ export class AiService implements OnModuleInit {
   private embeddings: OpenAIEmbeddings | null = null;
   private checkpointer: PostgresSaver | null = null;
 
-  private langfusePublicKey: string | undefined;
-  private langfuseSecretKey: string | undefined;
-  private langfuseBaseUrl: string | undefined;
+  private readonly litellmBaseUrl: string | undefined;
+  private readonly litellmApiKey: string | undefined;
 
-  private litellmBaseUrl: string | undefined;
-  private litellmApiKey: string | undefined;
-
-  constructor(@Inject(ConfigService) private configService: ConfigService) {
+  constructor(
+    @Inject(ConfigService) private configService: ConfigService,
+    private langfuseService: LangfuseService,
+  ) {
     this.litellmBaseUrl = this.configService.get('LITELLM_BASE_URL');
     this.litellmApiKey = this.configService.get('LITELLM_MASTER_KEY');
-
-    this.langfusePublicKey = this.configService.get('LANGFUSE_PUBLIC_KEY');
-    this.langfuseSecretKey = this.configService.get('LANGFUSE_SECRET_KEY');
-    this.langfuseBaseUrl = this.configService.get('LANGFUSE_BASE_URL');
   }
 
   async onModuleInit() {
@@ -117,7 +105,7 @@ export class AiService implements OnModuleInit {
         })
       : this.model;
 
-    const handler = this.createLangfuseHandler({
+    const handler = this.langfuseService.createHandler({
       userId: params.userId,
       sessionId: params.sessionId,
       tags: params.tags,
@@ -188,22 +176,6 @@ export class AiService implements OnModuleInit {
     return this.checkpointer;
   }
 
-  createLangfuseHandler(options?: LangfuseHandlerOptions): CallbackHandler | null {
-    if (!this.langfusePublicKey || !this.langfuseSecretKey) {
-      return null;
-    }
-
-    return new CallbackHandler({
-      publicKey: this.langfusePublicKey,
-      secretKey: this.langfuseSecretKey,
-      baseUrl: this.langfuseBaseUrl,
-      sessionId: options?.sessionId,
-      userId: options?.userId,
-      tags: options?.tags,
-      metadata: options?.metadata,
-    } as ConstructorParameters<typeof CallbackHandler>[0]);
-  }
-
   // === Status ===
 
   isConfigured(): boolean {
@@ -215,6 +187,6 @@ export class AiService implements OnModuleInit {
   }
 
   isLangfuseConfigured(): boolean {
-    return !!(this.langfusePublicKey && this.langfuseSecretKey);
+    return this.langfuseService.isConfigured();
   }
 }
