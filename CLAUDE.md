@@ -16,6 +16,7 @@
 ## Commandes
 
 ```bash
+make setup            # Installation complete (install + docker + migrate + seed)
 make dev              # Lance le projet
 make docker-up        # Lance postgres + redis (base)
 make docker-up-llm    # Lance base + litellm
@@ -25,6 +26,8 @@ make test             # Lance tous les tests
 make test-api         # Tests API uniquement
 make test-web         # Tests Web uniquement
 make test-cov         # Tests avec coverage
+make lint             # Lance ESLint
+make format           # Formate le code (Prettier + ESLint)
 ```
 
 ## Conventions
