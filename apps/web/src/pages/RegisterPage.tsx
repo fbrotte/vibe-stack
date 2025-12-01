@@ -27,7 +27,7 @@ export default function RegisterPage() {
       navigate('/dashboard')
     },
     onError: (error) => {
-      setError(error.message || 'Registration failed')
+      setError(error.message || "Échec de l'inscription")
     },
   })
 
@@ -41,8 +41,8 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Register</CardTitle>
-          <CardDescription>Create a new account to get started</CardDescription>
+          <CardTitle>Inscription</CardTitle>
+          <CardDescription>Créez un nouveau compte pour commencer</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -53,12 +53,12 @@ export default function RegisterPage() {
             )}
             <div className="space-y-2">
               <label htmlFor="name" className="text-sm font-medium">
-                Name
+                Nom
               </label>
               <Input
                 id="name"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Jean Dupont"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -66,7 +66,7 @@ export default function RegisterPage() {
             </div>
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
-                Email
+                E-mail
               </label>
               <Input
                 id="email"
@@ -79,7 +79,7 @@ export default function RegisterPage() {
             </div>
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">
-                Password
+                Mot de passe
               </label>
               <Input
                 id="password"
@@ -94,12 +94,12 @@ export default function RegisterPage() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
-              {registerMutation.isPending ? 'Creating account...' : 'Register'}
+              {registerMutation.isPending ? 'Création du compte...' : "S'inscrire"}
             </Button>
             <p className="text-center text-sm text-muted-foreground">
-              Already have an account?{' '}
+              Déjà un compte ?{' '}
               <Link to="/login" className="text-primary hover:underline">
-                Login
+                Se connecter
               </Link>
             </p>
           </CardFooter>

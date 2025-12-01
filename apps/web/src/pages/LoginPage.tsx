@@ -26,7 +26,7 @@ export default function LoginPage() {
       navigate('/dashboard')
     },
     onError: (error) => {
-      setError(error.message || 'Login failed')
+      setError(error.message || 'Échec de la connexion')
     },
   })
 
@@ -40,8 +40,8 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle>Connexion</CardTitle>
+          <CardDescription>Entrez vos identifiants pour accéder à votre compte</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -52,7 +52,7 @@ export default function LoginPage() {
             )}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
-                Email
+                E-mail
               </label>
               <Input
                 id="email"
@@ -65,7 +65,7 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">
-                Password
+                Mot de passe
               </label>
               <Input
                 id="password"
@@ -79,12 +79,12 @@ export default function LoginPage() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
-              {loginMutation.isPending ? 'Logging in...' : 'Login'}
+              {loginMutation.isPending ? 'Connexion en cours...' : 'Se connecter'}
             </Button>
             <p className="text-center text-sm text-muted-foreground">
-              Don't have an account?{' '}
+              Pas encore de compte ?{' '}
               <Link to="/register" className="text-primary hover:underline">
-                Register
+                S'inscrire
               </Link>
             </p>
           </CardFooter>
