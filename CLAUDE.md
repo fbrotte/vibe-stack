@@ -64,19 +64,30 @@ Methodes principales de `AiService` :
 - `embedding(params)` : Embeddings via LiteLLM
 - `getModel()` : Retourne un ChatOpenAI pour LangGraph
 - `getCheckpointer()` : Retourne le PostgresSaver pour persistance
-- `createLangfuseHandler()` : Cree un callback Langfuse pour graphs
 
-Exemple d'usage LangGraph :
+Tracing Langfuse (SDK direct, pas de callback) :
+- `langfuseService.createTrace()` : Trace parent pour un workflow
+- `trace.span()` : Span enfant pour une etape/noeud
+- `trace.generation()` : Pour les appels LLM (avec input/output/usage)
+- `langfuseService.flush()` : Envoyer les traces (async)
+
+Exemple d'usage LangGraph avec tracing :
 ```typescript
 const model = aiService.getModel();
 const checkpointer = aiService.getCheckpointer();
-const handler = aiService.createLangfuseHandler({ userId });
+const trace = langfuseService.createTrace({ name: 'my-agent', userId });
 
 const graph = new StateGraph(MessagesAnnotation)
-  .addNode("agent", async (state) => model.invoke(state.messages))
+  .addNode("agent", async (state) => {
+    const gen = trace.generation({ name: 'llm-call', model: 'gpt-4o' });
+    const result = await model.invoke(state.messages);
+    gen.end({ output: result.content });
+    return result;
+  })
   .compile({ checkpointer });
 
-await graph.invoke(state, { callbacks: [handler] });
+await graph.invoke(state);
+await langfuseService.flush();
 ```
 
 ## A eviter

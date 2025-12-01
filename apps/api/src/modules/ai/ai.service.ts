@@ -34,7 +34,7 @@ export class AiService implements OnModuleInit {
 
   constructor(
     @Inject(ConfigService) private configService: ConfigService,
-    private langfuseService: LangfuseService,
+    @Inject(LangfuseService) private langfuseService: LangfuseService,
   ) {
     this.litellmBaseUrl = this.configService.get('LITELLM_BASE_URL');
     this.litellmApiKey = this.configService.get('LITELLM_MASTER_KEY');
@@ -91,12 +91,15 @@ export class AiService implements OnModuleInit {
       throw new Error('AI model not configured');
     }
 
+    const modelName = params.model ?? 'gpt-4o-mini';
+    const temperature = params.temperature ?? 0.7;
+
     // Create model with custom settings if needed
     const needsCustomModel = params.model || params.temperature !== undefined || params.maxTokens !== undefined;
     const model = needsCustomModel
       ? new ChatOpenAI({
-          model: params.model ?? 'gpt-4o-mini',
-          temperature: params.temperature ?? 0.7,
+          model: modelName,
+          temperature,
           maxTokens: params.maxTokens,
           configuration: {
             baseURL: this.litellmBaseUrl!,
@@ -105,18 +108,42 @@ export class AiService implements OnModuleInit {
         })
       : this.model;
 
-    const handler = this.langfuseService.createHandler({
-      userId: params.userId,
-      sessionId: params.sessionId,
-      tags: params.tags,
-    });
+    // Start Langfuse trace
+    const tracing = this.langfuseService.startGeneration(
+      {
+        name: 'chat-completion',
+        userId: params.userId,
+        sessionId: params.sessionId,
+        tags: params.tags,
+      },
+      {
+        model: modelName,
+        input: params.messages.map((m) => ({ role: m.getType(), content: m.content })),
+        modelParameters: { temperature, maxTokens: params.maxTokens ?? null },
+      },
+    );
 
-    const callbacks = handler ? [handler] : [];
+    if (!tracing) {
+      this.logger.debug('Langfuse tracing disabled');
+    }
 
     try {
       const startTime = Date.now();
-      const response = await model.invoke(params.messages, { callbacks });
+      const response = await model.invoke(params.messages);
       const endTime = Date.now();
+
+      // End Langfuse trace with response
+      if (tracing) {
+        this.langfuseService.endGeneration(tracing.generation, response.content, {
+          promptTokens: response.usage_metadata?.input_tokens,
+          completionTokens: response.usage_metadata?.output_tokens,
+          totalTokens: response.usage_metadata?.total_tokens,
+        });
+        // Fire and forget flush
+        this.langfuseService.flush().catch((err) => {
+          this.logger.warn('Langfuse flush failed:', err);
+        });
+      }
 
       this.logger.log(`Chat completion completed in ${endTime - startTime}ms`);
       return response;

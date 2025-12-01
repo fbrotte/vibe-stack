@@ -1,2 +1,6 @@
 export { LangfuseModule } from './langfuse.module';
-export { LangfuseService, type LangfuseHandlerOptions } from './langfuse.service';
+export {
+  LangfuseService,
+  type LangfuseTraceOptions,
+  type LangfuseGenerationOptions,
+} from './langfuse.service';
