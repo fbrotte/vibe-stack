@@ -9,7 +9,7 @@ import { AppService } from './app.service';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
-import { LlmModule } from './modules/llm/llm.module';
+import { AiModule } from './modules/ai/ai.module';
 import { PythonModule } from './modules/python/python.module';
 import { LoggerModule } from './modules/logger/logger.module';
 // import { QueueModule } from './modules/queue/queue.module'; // Uncomment to enable
@@ -38,7 +38,7 @@ import { TrpcModule } from './trpc/trpc.module';
     PrismaModule,
     AuthModule,
     UsersModule,
-    LlmModule,
+    AiModule,
     PythonModule,
     // QueueModule, // Uncomment to enable
     TrpcModule,

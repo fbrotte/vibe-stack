@@ -2,4 +2,4 @@
 export * from './schemas/user.schema';
 export * from './schemas/auth.schema';
 export * from './schemas/env.schema';
-export * from './schemas/llm.schema';
+export * from './schemas/ai.schema';

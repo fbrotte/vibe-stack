@@ -6,20 +6,26 @@ export const ChatMessageSchema = z.object({
   content: z.string(),
 });
 
-// Schema for chat completion requests (inlined for nestjs-zod/swagger compatibility)
+// Schema for chat completion requests
 export const ChatCompletionSchema = z.object({
-  model: z.string(),
-  messages: z.array(z.object({
-    role: z.enum(['system', 'user', 'assistant']),
-    content: z.string(),
-  })).min(1),
+  model: z.string().optional(),
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(['system', 'user', 'assistant']),
+        content: z.string(),
+      }),
+    )
+    .min(1),
   temperature: z.number().min(0).max(2).optional(),
   maxTokens: z.number().positive().optional(),
+  sessionId: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 // Schema for embedding requests
 export const EmbeddingSchema = z.object({
-  model: z.string(),
+  model: z.string().optional(),
   input: z.union([z.string(), z.array(z.string())]),
 });
 

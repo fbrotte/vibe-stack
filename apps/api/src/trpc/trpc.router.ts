@@ -3,7 +3,7 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 import { TrpcService } from './trpc.service';
 import { AuthTrpc } from '../modules/auth/auth.trpc';
 import { UsersTrpc } from '../modules/users/users.trpc';
-import { LlmTrpc } from '../modules/llm/llm.trpc';
+import { AiTrpc } from '../modules/ai/ai.trpc';
 import { createContext } from './trpc.context';
 
 @Injectable()
@@ -14,13 +14,13 @@ export class TrpcRouter implements OnApplicationBootstrap {
     @Inject(TrpcService) private readonly trpc: TrpcService,
     @Inject(AuthTrpc) private readonly authTrpc: AuthTrpc,
     @Inject(UsersTrpc) private readonly usersTrpc: UsersTrpc,
-    @Inject(LlmTrpc) private readonly llmTrpc: LlmTrpc,
+    @Inject(AiTrpc) private readonly aiTrpc: AiTrpc,
   ) {
     // Assemble modular routers
     this.appRouter = this.trpc.router({
       auth: this.authTrpc.router,
       users: this.usersTrpc.router,
-      llm: this.llmTrpc.router,
+      ai: this.aiTrpc.router,
     });
   }
 

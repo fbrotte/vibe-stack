@@ -10,7 +10,7 @@
 - Data fetching : TanStack Query (via tRPC)
 - Tests : Vitest (unitaires et integration)
 - Logging : Pino via `LoggerService`
-- LLM : Via LiteLLM (`modules/llm/llm.service.ts`)
+- AI : Module unifie LangChain/LangGraph (`modules/ai/ai.service.ts`) via LiteLLM + Langfuse
 - Python : Scripts standalone dans `scripts/python/`, appeles via `pythonService.runScript()`
 
 ## Commandes
@@ -49,11 +49,41 @@ make test-cov         # Tests avec coverage
 - tRPC error formatter : Erreurs Zod formatees automatiquement
 - Auth : JWT access token (15m) + refresh token (7d) en DB
 
+## Module AI (LangChain/LangGraph)
+
+Structure du module `modules/ai/` :
+- `ai.service.ts` : Service principal avec appels directs et helpers LangGraph
+- `providers/` : Configuration ChatOpenAI (LiteLLM) et PostgresSaver (checkpointer)
+- `graphs/` : Dossier pour les StateGraphs LangGraph
+- `tools/` : Dossier pour les tools LangChain
+- `rag/` : Dossier pour les pipelines RAG
+- `memory/` : Dossier pour la gestion memoire
+
+Methodes principales de `AiService` :
+- `chatCompletion(params)` : Appel LLM direct avec tracing Langfuse
+- `embedding(params)` : Embeddings via LiteLLM
+- `getModel()` : Retourne un ChatOpenAI pour LangGraph
+- `getCheckpointer()` : Retourne le PostgresSaver pour persistance
+- `createLangfuseHandler()` : Cree un callback Langfuse pour graphs
+
+Exemple d'usage LangGraph :
+```typescript
+const model = aiService.getModel();
+const checkpointer = aiService.getCheckpointer();
+const handler = aiService.createLangfuseHandler({ userId });
+
+const graph = new StateGraph(MessagesAnnotation)
+  .addNode("agent", async (state) => model.invoke(state.messages))
+  .compile({ checkpointer });
+
+await graph.invoke(state, { callbacks: [handler] });
+```
+
 ## A eviter
 
 - class-validator (utiliser Zod)
 - localStorage direct pour l'auth (utiliser `useAuthStore`)
-- Appels LLM directs (passer par LiteLLM)
+- Appels LLM directs (passer par AiService)
 - Code Python dans NestJS (utiliser les scripts)
 - Dependances hors workspace
 - Jest (utiliser Vitest)
