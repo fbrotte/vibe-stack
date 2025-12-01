@@ -65,3 +65,8 @@ prisma/migrations/**
 *.tmp
 *.temp
 .cache
+
+# Shared package compiled files (use source TypeScript only)
+packages/shared/src/**/*.js
+packages/shared/src/**/*.js.map
+packages/shared/src/**/*.d.ts
