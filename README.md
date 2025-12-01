@@ -114,7 +114,7 @@ Unified API gateway for multiple LLM providers (OpenAI, Anthropic, etc.):
 ```bash
 make docker-up-llm
 ```
-Configure in `infrastructure/litellm/config.yaml` and set API keys in `.env`.
+Configure in `litellm.config.yaml` and set API keys in `.env`.
 
 #### Langfuse
 LLM observability and monitoring:

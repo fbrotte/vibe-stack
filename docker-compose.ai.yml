@@ -6,7 +6,7 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./infrastructure/litellm/config.yaml:/app/config.yaml:ro
+      - ./litellm.config.yaml:/app/config.yaml:ro
     environment:
       LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:-sk-1234}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
