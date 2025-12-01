@@ -5,21 +5,16 @@ Full-stack TypeScript/Python monorepo template optimized for rapid development w
 ## Quick Start
 
 ```bash
-# Clone and setup
 git clone <your-repo>
-cd template-dev
-cp .env.example .env
-
-# Generate JWT secrets
-make generate-secret
-# Copy the output to your .env file
-
-# Complete setup (install + docker + migrate + seed)
+cd my-project
 make setup
-
-# Start development
 make dev
 ```
+
+Le `make setup` crée automatiquement le fichier `.env` avec :
+
+- `COMPOSE_PROJECT_NAME` basé sur le nom du dossier (isolation Docker entre projets)
+- Secrets JWT générés aléatoirement
 
 The application will be available at:
 

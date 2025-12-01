@@ -1,10 +1,31 @@
-.PHONY: help setup dev dev-api dev-web docker-up docker-up-llm docker-down docker-reset db-migrate db-seed db-studio db-reset logs clean env-check generate-secret test test-api test-web test-cov lint format
+.PHONY: help setup init-env dev dev-api dev-web docker-up docker-up-llm docker-down docker-reset db-migrate db-seed db-studio db-reset logs clean env-check generate-secret test test-api test-web test-cov lint format
 
 help: ## Show this help message
 	@echo "Available commands:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-setup: ## Complete project setup (install + docker + migrate + seed)
+init-env: ## Initialize .env file with generated secrets
+	@if [ ! -f .env ]; then \
+		echo "Creating .env from .env.example..."; \
+		cp .env.example .env; \
+		PROJECT_NAME=$$(basename "$$(pwd)"); \
+		JWT_SECRET=$$(openssl rand -base64 32); \
+		JWT_REFRESH_SECRET=$$(openssl rand -base64 32); \
+		if [ "$$(uname)" = "Darwin" ]; then \
+			sed -i '' "s|COMPOSE_PROJECT_NAME=\"myproject\"|COMPOSE_PROJECT_NAME=\"$$PROJECT_NAME\"|g" .env; \
+			sed -i '' "s|your-jwt-secret-here-use-make-generate-secret|$$JWT_SECRET|g" .env; \
+			sed -i '' "s|your-refresh-secret-here-use-make-generate-secret|$$JWT_REFRESH_SECRET|g" .env; \
+		else \
+			sed -i "s|COMPOSE_PROJECT_NAME=\"myproject\"|COMPOSE_PROJECT_NAME=\"$$PROJECT_NAME\"|g" .env; \
+			sed -i "s|your-jwt-secret-here-use-make-generate-secret|$$JWT_SECRET|g" .env; \
+			sed -i "s|your-refresh-secret-here-use-make-generate-secret|$$JWT_REFRESH_SECRET|g" .env; \
+		fi; \
+		echo ".env created with COMPOSE_PROJECT_NAME=$$PROJECT_NAME and generated JWT secrets"; \
+	else \
+		echo ".env already exists, skipping"; \
+	fi
+
+setup: init-env ## Complete project setup (install + docker + migrate + seed)
 	@echo "Setting up the project..."
 	bun install
 	@$(MAKE) docker-up
