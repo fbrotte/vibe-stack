@@ -22,9 +22,7 @@ async function refreshAccessToken(): Promise<string | null> {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        json: { refreshToken },
-      }),
+      body: JSON.stringify({ refreshToken }),
     });
 
     if (!response.ok) {
@@ -32,7 +30,7 @@ async function refreshAccessToken(): Promise<string | null> {
     }
 
     const data = await response.json();
-    const result = data.result?.data?.json;
+    const result = data?.result?.data;
 
     if (result?.accessToken && result?.refreshToken) {
       setTokens(result.accessToken, result.refreshToken);
@@ -67,8 +65,24 @@ export function createTrpcClient() {
         async fetch(url, options) {
           const response = await fetch(url, options);
 
-          // If we get a 401, try to refresh the token
-          if (response.status === 401) {
+          // Check for 401 in HTTP status OR in tRPC batch response body
+          let hasUnauthorized = response.status === 401;
+
+          if (!hasUnauthorized && response.ok) {
+            // tRPC batch returns 200 with errors in JSON body
+            const cloned = response.clone();
+            try {
+              const data = await cloned.json();
+              const results = Array.isArray(data) ? data : [data];
+              hasUnauthorized = results.some(
+                (r) => r?.error?.data?.httpStatus === 401,
+              );
+            } catch {
+              // Not JSON, ignore
+            }
+          }
+
+          if (hasUnauthorized) {
             const { refreshToken } = useAuthStore.getState();
 
             if (refreshToken && !isRefreshing) {

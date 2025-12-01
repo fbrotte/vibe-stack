@@ -16,9 +16,9 @@ export default function DashboardPage() {
 
   const { data: userData, isLoading } = trpc.auth.me.useQuery();
   const { data: users } = trpc.users.list.useQuery();
-  const { data: llmStatus } = trpc.llm.status.useQuery();
+  const { data: llmStatus } = trpc.ai.status.useQuery();
 
-  const llmTestMutation = trpc.llm.test.useMutation({
+  const llmTestMutation = trpc.ai.chat.useMutation({
     onSuccess: (data) => {
       if (data.success) {
         setLlmResponse(data.response);
@@ -137,7 +137,7 @@ export default function DashboardPage() {
                   placeholder="Enter your message..."
                 />
                 <Button
-                  onClick={() => llmTestMutation.mutate({ message: llmMessage })}
+                  onClick={() => llmTestMutation.mutate({ messages: [{ role: 'user', content: llmMessage }] })}
                   disabled={llmTestMutation.isPending || !llmMessage.trim()}
                 >
                   {llmTestMutation.isPending ? 'Calling LLM...' : 'Send'}
