@@ -1,6 +1,6 @@
-import { ForbiddenException } from '@nestjs/common';
-import { TRPCError } from '@trpc/server';
-import { JwtPayload } from '../types/jwt-payload.type';
+import { ForbiddenException } from '@nestjs/common'
+import { TRPCError } from '@trpc/server'
+import type { JwtPayload } from '../types/jwt-payload.type'
 
 /**
  * Asserts that the current user is either the owner of the resource or an admin.
@@ -19,11 +19,11 @@ import { JwtPayload } from '../types/jwt-payload.type';
  */
 export function assertOwnerOrAdmin(resourceUserId: string, currentUser: JwtPayload): void {
   if (currentUser.role === 'ADMIN') {
-    return;
+    return
   }
 
   if (currentUser.userId !== resourceUserId) {
-    throw new ForbiddenException('You can only access your own resources');
+    throw new ForbiddenException('You can only access your own resources')
   }
 }
 
@@ -41,13 +41,13 @@ export function assertOwnerOrAdmin(resourceUserId: string, currentUser: JwtPaylo
  */
 export function assertOwnerOrAdminTrpc(resourceUserId: string, currentUser: JwtPayload): void {
   if (currentUser.role === 'ADMIN') {
-    return;
+    return
   }
 
   if (currentUser.userId !== resourceUserId) {
     throw new TRPCError({
       code: 'FORBIDDEN',
       message: 'You can only access your own resources',
-    });
+    })
   }
 }

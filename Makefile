@@ -1,4 +1,4 @@
-.PHONY: help setup dev dev-api dev-web docker-up docker-up-llm docker-down docker-reset db-migrate db-seed db-studio db-reset logs clean env-check generate-secret test test-api test-web test-cov
+.PHONY: help setup dev dev-api dev-web docker-up docker-up-llm docker-down docker-reset db-migrate db-seed db-studio db-reset logs clean env-check generate-secret test test-api test-web test-cov lint format
 
 help: ## Show this help message
 	@echo "Available commands:"
@@ -104,3 +104,11 @@ test-cov: ## Run tests with coverage
 	@echo "Running tests with coverage..."
 	@cd apps/api && bun run test:cov
 	@cd apps/web && bun run test:cov
+
+lint: ## Run ESLint check
+	@echo "Running ESLint..."
+	@bun run lint:check
+
+format: ## Format code (Prettier + ESLint fix)
+	@echo "Formatting code..."
+	@bun run format && bun run lint:fix

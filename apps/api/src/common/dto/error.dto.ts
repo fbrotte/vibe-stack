@@ -1,12 +1,12 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class ApiErrorDto {
   @ApiProperty({ example: 401, type: Number })
-  statusCode: number;
+  statusCode: number
 
   @ApiProperty({ example: 'Invalid credentials', type: String })
-  message: string;
+  message: string
 
   @ApiPropertyOptional({ example: 'Unauthorized', type: String })
-  error?: string;
+  error?: string
 }

@@ -43,6 +43,7 @@ make dev
 ```
 
 The application will be available at:
+
 - Frontend: http://localhost:5173
 - API: http://localhost:3000/api
 - Swagger Docs: http://localhost:3000/api/docs
@@ -51,6 +52,7 @@ The application will be available at:
 ## Default Credentials
 
 After seeding the database:
+
 - Admin: `admin@example.com` / `Admin123!`
 - User: `user@example.com` / `User123!`
 
@@ -98,11 +100,13 @@ make clean            # Clean node_modules and dist
 ## Features
 
 ### Authentication
+
 - JWT access tokens + refresh tokens
 - Protected routes in frontend and backend
 - Role-based access control (USER/ADMIN)
 
 ### tRPC
+
 - Type-safe API calls from frontend to backend
 - Automatic type inference
 - Shared Zod schemas for validation
@@ -110,27 +114,36 @@ make clean            # Clean node_modules and dist
 ### Optional Services
 
 #### LiteLLM
+
 Unified API gateway for multiple LLM providers (OpenAI, Anthropic, etc.):
+
 ```bash
 make docker-up-llm
 ```
+
 Configure in `litellm.config.yaml` and set API keys in `.env`.
 
 #### Langfuse
+
 LLM observability and monitoring:
+
 ```bash
 make docker-up-observability
 ```
+
 Access at http://localhost:3001
 
 #### BullMQ
+
 Queue management (commented by default):
+
 1. Uncomment QueueModule in `apps/api/src/app.module.ts`
 2. Set `QUEUE_ENABLED=true` in `.env`
 
 ### Python Scripts
 
 Add standalone Python scripts in `scripts/python/`:
+
 ```python
 # scripts/python/my_script.py
 import sys
@@ -142,8 +155,9 @@ print(json.dumps(result))
 ```
 
 Call from NestJS:
+
 ```typescript
-const result = await this.pythonService.runScript('my_script.py', { foo: 'bar' });
+const result = await this.pythonService.runScript('my_script.py', { foo: 'bar' })
 ```
 
 ## Development Workflow
@@ -159,6 +173,7 @@ const result = await this.pythonService.runScript('my_script.py', { foo: 'bar' }
 See `.env.example` for all available configuration options.
 
 Key variables:
+
 - `DATABASE_URL`: PostgreSQL connection string
 - `JWT_SECRET` / `JWT_REFRESH_SECRET`: Generate with `make generate-secret`
 - `LITELLM_BASE_URL` / `LITELLM_MASTER_KEY`: For LLM features

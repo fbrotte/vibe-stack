@@ -1,12 +1,12 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { HumanMessage, SystemMessage, AIMessage } from '@langchain/core/messages';
-import { TrpcService } from '../../trpc/trpc.service';
-import { AiService } from './ai.service';
-import { ChatCompletionSchema, EmbeddingSchema } from '@template-dev/shared';
+import { Injectable, Inject } from '@nestjs/common'
+import { HumanMessage, SystemMessage, AIMessage } from '@langchain/core/messages'
+import { TrpcService } from '../../trpc/trpc.service'
+import { AiService } from './ai.service'
+import { ChatCompletionSchema, EmbeddingSchema } from '@template-dev/shared'
 
 @Injectable()
 export class AiTrpc {
-  router: ReturnType<TrpcService['router']>;
+  router: ReturnType<TrpcService['router']>
 
   constructor(
     @Inject(TrpcService) private readonly trpc: TrpcService,
@@ -18,7 +18,7 @@ export class AiTrpc {
           configured: this.aiService.isConfigured(),
           checkpointerConfigured: this.aiService.isCheckpointerConfigured(),
           langfuseConfigured: this.aiService.isLangfuseConfigured(),
-        };
+        }
       }),
 
       chat: this.trpc.protectedProcedure
@@ -29,21 +29,21 @@ export class AiTrpc {
               success: false,
               error: 'AI not configured. Set LITELLM_BASE_URL and LITELLM_MASTER_KEY.',
               response: null,
-            };
+            }
           }
 
           try {
             const messages = input.messages.map((msg) => {
               switch (msg.role) {
                 case 'system':
-                  return new SystemMessage(msg.content);
+                  return new SystemMessage(msg.content)
                 case 'assistant':
-                  return new AIMessage(msg.content);
+                  return new AIMessage(msg.content)
                 case 'user':
                 default:
-                  return new HumanMessage(msg.content);
+                  return new HumanMessage(msg.content)
               }
-            });
+            })
 
             const response = await this.aiService.chatCompletion({
               model: input.model,
@@ -53,19 +53,19 @@ export class AiTrpc {
               userId: ctx.user?.userId,
               sessionId: input.sessionId,
               tags: input.tags,
-            });
+            })
 
             return {
               success: true,
               error: null,
               response: response.content as string,
-            };
+            }
           } catch (error) {
             return {
               success: false,
               error: error instanceof Error ? error.message : 'Unknown error',
               response: null,
-            };
+            }
           }
         }),
 
@@ -77,7 +77,7 @@ export class AiTrpc {
               success: false,
               error: 'AI not configured. Set LITELLM_BASE_URL and LITELLM_MASTER_KEY.',
               embeddings: null,
-            };
+            }
           }
 
           try {
@@ -85,21 +85,21 @@ export class AiTrpc {
               model: input.model,
               input: input.input,
               userId: ctx.user?.userId,
-            });
+            })
 
             return {
               success: true,
               error: null,
               embeddings,
-            };
+            }
           } catch (error) {
             return {
               success: false,
               error: error instanceof Error ? error.message : 'Unknown error',
               embeddings: null,
-            };
+            }
           }
         }),
-    });
+    })
   }
 }

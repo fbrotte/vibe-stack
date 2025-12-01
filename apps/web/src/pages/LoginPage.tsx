@@ -1,36 +1,43 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { trpc } from '@/lib/trpc';
-import { useAuthStore } from '@/stores/auth.store';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { trpc } from '@/lib/trpc'
+import { useAuthStore } from '@/stores/auth.store'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 export default function LoginPage() {
-  const navigate = useNavigate();
-  const setAuth = useAuthStore((state) => state.setAuth);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const navigate = useNavigate()
+  const setAuth = useAuthStore((state) => state.setAuth)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
 
   const loginMutation = trpc.auth.login.useMutation({
     onSuccess: (data) => {
-      setAuth(data);
-      navigate('/dashboard');
+      setAuth(data)
+      navigate('/dashboard')
     },
     onError: (error) => {
-      setError(error.message || 'Login failed');
+      setError(error.message || 'Login failed')
     },
-  });
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    loginMutation.mutate({ email, password });
-  };
+    e.preventDefault()
+    setError('')
+    loginMutation.mutate({ email, password })
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Login</CardTitle>
@@ -39,7 +46,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded">
+              <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-500">
                 {error}
               </div>
             )}
@@ -74,7 +81,7 @@ export default function LoginPage() {
             <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
               {loginMutation.isPending ? 'Logging in...' : 'Login'}
             </Button>
-            <p className="text-sm text-center text-muted-foreground">
+            <p className="text-center text-sm text-muted-foreground">
               Don't have an account?{' '}
               <Link to="/register" className="text-primary hover:underline">
                 Register
@@ -84,5 +91,5 @@ export default function LoginPage() {
         </form>
       </Card>
     </div>
-  );
+  )
 }

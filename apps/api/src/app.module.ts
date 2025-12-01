@@ -1,20 +1,20 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
-import { APP_PIPE } from '@nestjs/core';
-import { ZodValidationPipe } from 'nestjs-zod';
-import { EnvSchema } from '@template-dev/shared';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PrismaModule } from './modules/prisma/prisma.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
-import { AiModule } from './modules/ai/ai.module';
-import { LangfuseModule } from './modules/langfuse';
-import { PythonModule } from './modules/python/python.module';
-import { LoggerModule } from './modules/logger/logger.module';
+import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
+import { ThrottlerModule } from '@nestjs/throttler'
+import { APP_PIPE } from '@nestjs/core'
+import { ZodValidationPipe } from 'nestjs-zod'
+import { EnvSchema } from '@template-dev/shared'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { PrismaModule } from './modules/prisma/prisma.module'
+import { AuthModule } from './modules/auth/auth.module'
+import { UsersModule } from './modules/users/users.module'
+import { AiModule } from './modules/ai/ai.module'
+import { LangfuseModule } from './modules/langfuse'
+import { PythonModule } from './modules/python/python.module'
+import { LoggerModule } from './modules/logger/logger.module'
 // import { QueueModule } from './modules/queue/queue.module'; // Uncomment to enable
-import { TrpcModule } from './trpc/trpc.module';
+import { TrpcModule } from './trpc/trpc.module'
 
 @Module({
   imports: [
@@ -22,10 +22,10 @@ import { TrpcModule } from './trpc/trpc.module';
       isGlobal: true,
       validate: (config) => {
         try {
-          return EnvSchema.parse(config);
+          return EnvSchema.parse(config)
         } catch (error) {
-          console.error('Invalid environment variables:', error);
-          process.exit(1);
+          console.error('Invalid environment variables:', error)
+          process.exit(1)
         }
       },
     }),

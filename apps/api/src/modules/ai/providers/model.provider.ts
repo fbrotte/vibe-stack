@@ -1,16 +1,16 @@
-import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
+import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai'
 
 export interface ModelConfig {
-  baseURL: string;
-  apiKey: string;
-  model?: string;
-  temperature?: number;
+  baseURL: string
+  apiKey: string
+  model?: string
+  temperature?: number
 }
 
 export interface EmbeddingsConfig {
-  baseURL: string;
-  apiKey: string;
-  model?: string;
+  baseURL: string
+  apiKey: string
+  model?: string
 }
 
 export const createChatModel = (config: ModelConfig): ChatOpenAI => {
@@ -21,8 +21,8 @@ export const createChatModel = (config: ModelConfig): ChatOpenAI => {
       baseURL: config.baseURL,
       apiKey: config.apiKey,
     },
-  });
-};
+  })
+}
 
 export const createEmbeddings = (config: EmbeddingsConfig): OpenAIEmbeddings => {
   return new OpenAIEmbeddings({
@@ -31,5 +31,5 @@ export const createEmbeddings = (config: EmbeddingsConfig): OpenAIEmbeddings => 
       baseURL: config.baseURL,
       apiKey: config.apiKey,
     },
-  });
-};
+  })
+}

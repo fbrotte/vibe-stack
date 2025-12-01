@@ -31,6 +31,7 @@ const result = await this.pythonService.runScript('example.py', {
 ## Script Template
 
 All scripts should:
+
 1. Accept JSON input as first command line argument
 2. Output JSON result to stdout
 3. Output errors to stderr

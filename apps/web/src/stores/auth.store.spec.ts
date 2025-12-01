@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useAuthStore } from './auth.store';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { useAuthStore } from './auth.store'
 
 describe('AuthStore', () => {
   beforeEach(() => {
@@ -10,9 +10,9 @@ describe('AuthStore', () => {
       user: null,
       isAuthenticated: false,
       isLoading: false,
-    });
-    vi.clearAllMocks();
-  });
+    })
+    vi.clearAllMocks()
+  })
 
   describe('setAuth', () => {
     it('should set authentication data', () => {
@@ -25,17 +25,17 @@ describe('AuthStore', () => {
           name: 'Test User',
           role: 'USER' as const,
         },
-      };
+      }
 
-      useAuthStore.getState().setAuth(authData);
+      useAuthStore.getState().setAuth(authData)
 
-      const state = useAuthStore.getState();
-      expect(state.accessToken).toBe('access-token');
-      expect(state.refreshToken).toBe('refresh-token');
-      expect(state.user?.email).toBe('test@example.com');
-      expect(state.isAuthenticated).toBe(true);
-    });
-  });
+      const state = useAuthStore.getState()
+      expect(state.accessToken).toBe('access-token')
+      expect(state.refreshToken).toBe('refresh-token')
+      expect(state.user?.email).toBe('test@example.com')
+      expect(state.isAuthenticated).toBe(true)
+    })
+  })
 
   describe('logout', () => {
     it('should clear authentication data', () => {
@@ -46,35 +46,35 @@ describe('AuthStore', () => {
         user: { id: '1', email: 'test@test.com', name: 'Test', role: 'USER' },
         isAuthenticated: true,
         isLoading: false,
-      });
+      })
 
-      useAuthStore.getState().logout();
+      useAuthStore.getState().logout()
 
-      const state = useAuthStore.getState();
-      expect(state.accessToken).toBeNull();
-      expect(state.refreshToken).toBeNull();
-      expect(state.user).toBeNull();
-      expect(state.isAuthenticated).toBe(false);
-    });
-  });
+      const state = useAuthStore.getState()
+      expect(state.accessToken).toBeNull()
+      expect(state.refreshToken).toBeNull()
+      expect(state.user).toBeNull()
+      expect(state.isAuthenticated).toBe(false)
+    })
+  })
 
   describe('setTokens', () => {
     it('should update tokens without affecting user', () => {
-      const user = { id: '1', email: 'test@test.com', name: 'Test', role: 'USER' as const };
+      const user = { id: '1', email: 'test@test.com', name: 'Test', role: 'USER' as const }
       useAuthStore.setState({
         accessToken: 'old-token',
         refreshToken: 'old-refresh',
         user,
         isAuthenticated: true,
         isLoading: false,
-      });
+      })
 
-      useAuthStore.getState().setTokens('new-token', 'new-refresh');
+      useAuthStore.getState().setTokens('new-token', 'new-refresh')
 
-      const state = useAuthStore.getState();
-      expect(state.accessToken).toBe('new-token');
-      expect(state.refreshToken).toBe('new-refresh');
-      expect(state.user).toEqual(user);
-    });
-  });
-});
+      const state = useAuthStore.getState()
+      expect(state.accessToken).toBe('new-token')
+      expect(state.refreshToken).toBe('new-refresh')
+      expect(state.user).toEqual(user)
+    })
+  })
+})

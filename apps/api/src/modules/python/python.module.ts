@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { PythonService } from './python.service';
+import { Module } from '@nestjs/common'
+import { PythonService } from './python.service'
 
 @Module({
   providers: [PythonService],

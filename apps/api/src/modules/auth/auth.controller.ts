@@ -1,8 +1,14 @@
-import { Controller, Post, Body, UseGuards, Request, Inject } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { LoginDto, RegisterDto, RefreshTokenDto, AuthResponseDto, ApiErrorDto } from '../../common/dto';
+import { Controller, Post, Body, UseGuards, Request, Inject } from '@nestjs/common'
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody, ApiResponse } from '@nestjs/swagger'
+import { AuthService } from './auth.service'
+import { JwtAuthGuard } from './guards/jwt-auth.guard'
+import {
+  LoginDto,
+  RegisterDto,
+  RefreshTokenDto,
+  AuthResponseDto,
+  ApiErrorDto,
+} from '../../common/dto'
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -16,7 +22,7 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Validation error', type: ApiErrorDto })
   @ApiResponse({ status: 409, description: 'User already exists', type: ApiErrorDto })
   async register(@Body() body: RegisterDto) {
-    return this.authService.register(body);
+    return this.authService.register(body)
   }
 
   @Post('login')
@@ -26,7 +32,7 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Validation error', type: ApiErrorDto })
   @ApiResponse({ status: 401, description: 'Invalid credentials', type: ApiErrorDto })
   async login(@Body() body: LoginDto) {
-    return this.authService.login(body);
+    return this.authService.login(body)
   }
 
   @Post('refresh')
@@ -35,7 +41,7 @@ export class AuthController {
   @ApiResponse({ status: 201, type: AuthResponseDto })
   @ApiResponse({ status: 401, description: 'Invalid refresh token', type: ApiErrorDto })
   async refresh(@Body() body: RefreshTokenDto) {
-    return this.authService.refreshToken(body.refreshToken);
+    return this.authService.refreshToken(body.refreshToken)
   }
 
   @Post('logout')
@@ -45,7 +51,7 @@ export class AuthController {
   @ApiBody({ type: RefreshTokenDto })
   @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorDto })
   async logout(@Request() req: any, @Body() body: RefreshTokenDto) {
-    await this.authService.logout(req.user.userId, body.refreshToken);
-    return { message: 'Logged out successfully' };
+    await this.authService.logout(req.user.userId, body.refreshToken)
+    return { message: 'Logged out successfully' }
   }
 }

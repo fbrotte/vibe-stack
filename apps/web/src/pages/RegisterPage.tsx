@@ -1,37 +1,44 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { trpc } from '@/lib/trpc';
-import { useAuthStore } from '@/stores/auth.store';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { trpc } from '@/lib/trpc'
+import { useAuthStore } from '@/stores/auth.store'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 export default function RegisterPage() {
-  const navigate = useNavigate();
-  const setAuth = useAuthStore((state) => state.setAuth);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const navigate = useNavigate()
+  const setAuth = useAuthStore((state) => state.setAuth)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
 
   const registerMutation = trpc.auth.register.useMutation({
     onSuccess: (data) => {
-      setAuth(data);
-      navigate('/dashboard');
+      setAuth(data)
+      navigate('/dashboard')
     },
     onError: (error) => {
-      setError(error.message || 'Registration failed');
+      setError(error.message || 'Registration failed')
     },
-  });
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    registerMutation.mutate({ name, email, password });
-  };
+    e.preventDefault()
+    setError('')
+    registerMutation.mutate({ name, email, password })
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Register</CardTitle>
@@ -40,7 +47,7 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded">
+              <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-500">
                 {error}
               </div>
             )}
@@ -89,7 +96,7 @@ export default function RegisterPage() {
             <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
               {registerMutation.isPending ? 'Creating account...' : 'Register'}
             </Button>
-            <p className="text-sm text-center text-muted-foreground">
+            <p className="text-center text-sm text-muted-foreground">
               Already have an account?{' '}
               <Link to="/login" className="text-primary hover:underline">
                 Login
@@ -99,5 +106,5 @@ export default function RegisterPage() {
         </form>
       </Card>
     </div>
-  );
+  )
 }

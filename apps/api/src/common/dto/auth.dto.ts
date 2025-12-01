@@ -1,10 +1,10 @@
-import { createZodDto } from 'nestjs-zod';
+import { createZodDto } from 'nestjs-zod'
 import {
   LoginSchema,
   RegisterSchema,
   RefreshTokenSchema,
   AuthResponseSchema,
-} from '@template-dev/shared';
+} from '@template-dev/shared'
 
 export class LoginDto extends createZodDto(LoginSchema) {}
 export class RegisterDto extends createZodDto(RegisterSchema) {}

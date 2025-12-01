@@ -1,2 +1,2 @@
-export * from './auth.dto';
-export * from './error.dto';
+export * from './auth.dto'
+export * from './error.dto'

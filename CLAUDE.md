@@ -52,6 +52,7 @@ make test-cov         # Tests avec coverage
 ## Module AI (LangChain/LangGraph)
 
 Structure du module `modules/ai/` :
+
 - `ai.service.ts` : Service principal avec appels directs et helpers LangGraph
 - `providers/` : Configuration ChatOpenAI (LiteLLM) et PostgresSaver (checkpointer)
 - `graphs/` : Dossier pour les StateGraphs LangGraph
@@ -60,34 +61,37 @@ Structure du module `modules/ai/` :
 - `memory/` : Dossier pour la gestion memoire
 
 Methodes principales de `AiService` :
+
 - `chatCompletion(params)` : Appel LLM direct avec tracing Langfuse
 - `embedding(params)` : Embeddings via LiteLLM
 - `getModel()` : Retourne un ChatOpenAI pour LangGraph
 - `getCheckpointer()` : Retourne le PostgresSaver pour persistance
 
 Tracing Langfuse (SDK direct, pas de callback) :
+
 - `langfuseService.createTrace()` : Trace parent pour un workflow
 - `trace.span()` : Span enfant pour une etape/noeud
 - `trace.generation()` : Pour les appels LLM (avec input/output/usage)
 - `langfuseService.flush()` : Envoyer les traces (async)
 
 Exemple d'usage LangGraph avec tracing :
+
 ```typescript
-const model = aiService.getModel();
-const checkpointer = aiService.getCheckpointer();
-const trace = langfuseService.createTrace({ name: 'my-agent', userId });
+const model = aiService.getModel()
+const checkpointer = aiService.getCheckpointer()
+const trace = langfuseService.createTrace({ name: 'my-agent', userId })
 
 const graph = new StateGraph(MessagesAnnotation)
-  .addNode("agent", async (state) => {
-    const gen = trace.generation({ name: 'llm-call', model: 'gpt-4o' });
-    const result = await model.invoke(state.messages);
-    gen.end({ output: result.content });
-    return result;
+  .addNode('agent', async (state) => {
+    const gen = trace.generation({ name: 'llm-call', model: 'gpt-4o' })
+    const result = await model.invoke(state.messages)
+    gen.end({ output: result.content })
+    return result
   })
-  .compile({ checkpointer });
+  .compile({ checkpointer })
 
-await graph.invoke(state);
-await langfuseService.flush();
+await graph.invoke(state)
+await langfuseService.flush()
 ```
 
 ## A eviter

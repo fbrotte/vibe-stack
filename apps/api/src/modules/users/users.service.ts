@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { UpdateUser } from '@template-dev/shared';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
+import type { UpdateUser } from '@template-dev/shared'
 
 @Injectable()
 export class UsersService {
@@ -16,7 +16,7 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
       },
-    });
+    })
   }
 
   async findOne(id: string) {
@@ -30,20 +30,20 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
       },
-    });
+    })
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`User with ID ${id} not found`)
     }
 
-    return user;
+    return user
   }
 
   async update(id: string, data: UpdateUser) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } })
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`User with ID ${id} not found`)
     }
 
     return this.prisma.user.update({
@@ -57,18 +57,18 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
       },
-    });
+    })
   }
 
   async remove(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } })
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`User with ID ${id} not found`)
     }
 
-    await this.prisma.user.delete({ where: { id } });
+    await this.prisma.user.delete({ where: { id } })
 
-    return { message: `User ${id} deleted successfully` };
+    return { message: `User ${id} deleted successfully` }
   }
 }

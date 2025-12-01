@@ -1,27 +1,27 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import type { AuthResponse } from '@template-dev/shared';
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import type { AuthResponse } from '@template-dev/shared'
 
 interface User {
-  id: string;
-  email: string;
-  name: string | null;
-  role: 'USER' | 'ADMIN';
+  id: string
+  email: string
+  name: string | null
+  role: 'USER' | 'ADMIN'
 }
 
 interface AuthState {
-  accessToken: string | null;
-  refreshToken: string | null;
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
+  accessToken: string | null
+  refreshToken: string | null
+  user: User | null
+  isAuthenticated: boolean
+  isLoading: boolean
 
   // Actions
-  setAuth: (data: AuthResponse) => void;
-  setTokens: (accessToken: string, refreshToken: string) => void;
-  setUser: (user: User) => void;
-  setLoading: (loading: boolean) => void;
-  logout: () => void;
+  setAuth: (data: AuthResponse) => void
+  setTokens: (accessToken: string, refreshToken: string) => void
+  setUser: (user: User) => void
+  setLoading: (loading: boolean) => void
+  logout: () => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -75,14 +75,14 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: state.isAuthenticated,
       }),
       onRehydrateStorage: () => (state) => {
-        state?.setLoading(false);
+        state?.setLoading(false)
       },
     },
   ),
-);
+)
 
 // Selector hooks for better performance
-export const useUser = () => useAuthStore((state) => state.user);
-export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated);
-export const useAccessToken = () => useAuthStore((state) => state.accessToken);
-export const useAuthLoading = () => useAuthStore((state) => state.isLoading);
+export const useUser = () => useAuthStore((state) => state.user)
+export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated)
+export const useAccessToken = () => useAuthStore((state) => state.accessToken)
+export const useAuthLoading = () => useAuthStore((state) => state.isLoading)

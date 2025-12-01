@@ -1,8 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { UserRole } from '@template-dev/shared';
-import { ROLES_KEY } from '../decorators/roles.decorator';
-import { JwtPayload } from '../types/jwt-payload.type';
+import type { CanActivate, ExecutionContext } from '@nestjs/common'
+import { Injectable, ForbiddenException } from '@nestjs/common'
+import type { Reflector } from '@nestjs/core'
+import type { UserRole } from '@template-dev/shared'
+import { ROLES_KEY } from '../decorators/roles.decorator'
+import type { JwtPayload } from '../types/jwt-payload.type'
 
 /**
  * Guard that checks if the authenticated user has one of the required roles.
@@ -28,28 +29,26 @@ export class RolesGuard implements CanActivate {
     const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
-    ]);
+    ])
 
     // If no roles are required, allow access
     if (!requiredRoles || requiredRoles.length === 0) {
-      return true;
+      return true
     }
 
-    const request = context.switchToHttp().getRequest();
-    const user = request.user as JwtPayload;
+    const request = context.switchToHttp().getRequest()
+    const user = request.user as JwtPayload
 
     if (!user) {
-      throw new ForbiddenException('User not authenticated');
+      throw new ForbiddenException('User not authenticated')
     }
 
-    const hasRole = requiredRoles.includes(user.role);
+    const hasRole = requiredRoles.includes(user.role)
 
     if (!hasRole) {
-      throw new ForbiddenException(
-        `Access denied. Required roles: ${requiredRoles.join(', ')}`,
-      );
+      throw new ForbiddenException(`Access denied. Required roles: ${requiredRoles.join(', ')}`)
     }
 
-    return true;
+    return true
   }
 }

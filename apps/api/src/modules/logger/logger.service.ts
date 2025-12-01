@@ -1,9 +1,11 @@
-import { Injectable, LoggerService as NestLoggerService } from '@nestjs/common';
-import pino, { Logger } from 'pino';
+import type { LoggerService as NestLoggerService } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
+import type { Logger } from 'pino'
+import pino from 'pino'
 
 @Injectable()
 export class LoggerService implements NestLoggerService {
-  private readonly logger: Logger;
+  private readonly logger: Logger
 
   constructor() {
     this.logger = pino({
@@ -19,45 +21,49 @@ export class LoggerService implements NestLoggerService {
             }
           : undefined,
       level: process.env.LOG_LEVEL || 'info',
-    });
+    })
   }
 
   log(message: string, context?: string): void {
-    this.logger.info({ context }, message);
+    this.logger.info({ context }, message)
   }
 
   error(message: string, trace?: string, context?: string): void {
-    this.logger.error({ context, trace }, message);
+    this.logger.error({ context, trace }, message)
   }
 
   warn(message: string, context?: string): void {
-    this.logger.warn({ context }, message);
+    this.logger.warn({ context }, message)
   }
 
   debug(message: string, context?: string): void {
-    this.logger.debug({ context }, message);
+    this.logger.debug({ context }, message)
   }
 
   verbose(message: string, context?: string): void {
-    this.logger.trace({ context }, message);
+    this.logger.trace({ context }, message)
   }
 
   // Extended methods for structured logging
   info(message: string, data?: Record<string, unknown>, context?: string): void {
-    this.logger.info({ context, ...data }, message);
+    this.logger.info({ context, ...data }, message)
   }
 
-  logWithData(level: 'info' | 'warn' | 'error' | 'debug', message: string, data: Record<string, unknown>): void {
-    this.logger[level](data, message);
+  logWithData(
+    level: 'info' | 'warn' | 'error' | 'debug',
+    message: string,
+    data: Record<string, unknown>,
+  ): void {
+    this.logger[level](data, message)
   }
 
   // Create child logger with bound context
   child(bindings: Record<string, unknown>): Logger {
-    return this.logger.child(bindings);
+    return this.logger.child(bindings)
   }
 
   // Get raw pino instance for advanced usage
   getPinoInstance(): Logger {
-    return this.logger;
+    return this.logger
   }
 }

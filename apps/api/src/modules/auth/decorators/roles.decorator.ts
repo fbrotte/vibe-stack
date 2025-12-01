@@ -1,7 +1,7 @@
-import { SetMetadata } from '@nestjs/common';
-import { UserRole } from '@template-dev/shared';
+import { SetMetadata } from '@nestjs/common'
+import type { UserRole } from '@template-dev/shared'
 
-export const ROLES_KEY = 'roles';
+export const ROLES_KEY = 'roles'
 
 /**
  * Decorator to specify which roles can access a route.
@@ -13,4 +13,4 @@ export const ROLES_KEY = 'roles';
  * @Get('admin/dashboard')
  * getAdminDashboard() { ... }
  */
-export const Roles = (...roles: UserRole[]) => SetMetadata(ROLES_KEY, roles);
+export const Roles = (...roles: UserRole[]) => SetMetadata(ROLES_KEY, roles)

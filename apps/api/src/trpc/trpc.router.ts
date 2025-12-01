@@ -1,14 +1,15 @@
-import { INestApplication, Injectable, OnApplicationBootstrap, Inject } from '@nestjs/common';
-import * as trpcExpress from '@trpc/server/adapters/express';
-import { TrpcService } from './trpc.service';
-import { AuthTrpc } from '../modules/auth/auth.trpc';
-import { UsersTrpc } from '../modules/users/users.trpc';
-import { AiTrpc } from '../modules/ai/ai.trpc';
-import { createContext } from './trpc.context';
+import type { INestApplication, OnApplicationBootstrap } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
+import * as trpcExpress from '@trpc/server/adapters/express'
+import { TrpcService } from './trpc.service'
+import { AuthTrpc } from '../modules/auth/auth.trpc'
+import { UsersTrpc } from '../modules/users/users.trpc'
+import { AiTrpc } from '../modules/ai/ai.trpc'
+import { createContext } from './trpc.context'
 
 @Injectable()
 export class TrpcRouter implements OnApplicationBootstrap {
-  appRouter: ReturnType<TrpcService['router']>;
+  appRouter: ReturnType<TrpcService['router']>
 
   constructor(
     @Inject(TrpcService) private readonly trpc: TrpcService,
@@ -21,7 +22,7 @@ export class TrpcRouter implements OnApplicationBootstrap {
       auth: this.authTrpc.router,
       users: this.usersTrpc.router,
       ai: this.aiTrpc.router,
-    });
+    })
   }
 
   onApplicationBootstrap() {
@@ -36,12 +37,12 @@ export class TrpcRouter implements OnApplicationBootstrap {
         router: this.appRouter,
         createContext,
       }),
-    );
+    )
   }
 
   getRouter() {
-    return this.appRouter;
+    return this.appRouter
   }
 }
 
-export type AppRouter = TrpcRouter['appRouter'];
+export type AppRouter = TrpcRouter['appRouter']
