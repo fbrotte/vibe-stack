@@ -2,9 +2,12 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
-import { trpc, createTrpcClient } from './lib/trpc'
 import App from './App'
 import './index.css'
+
+// Mode démo vs mode normal
+import { DEMO_MODE, DemoProvider } from './demo'
+import { trpc, createTrpcClient } from './lib/trpc'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,16 +28,37 @@ const queryClient = new QueryClient({
   },
 })
 
-const trpcClient = createTrpcClient()
+// En mode démo, on n'a pas besoin du client tRPC
+const trpcClient = DEMO_MODE ? null : createTrpcClient()
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+function AppWrapper() {
+  // Mode démo : pas de tRPC, juste le DemoProvider
+  if (DEMO_MODE) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <DemoProvider>
+            <App />
+          </DemoProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    )
+  }
+
+  // Mode normal : tRPC + providers classiques
+  return (
+    <trpc.Provider client={trpcClient!} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
       </QueryClientProvider>
     </trpc.Provider>
+  )
+}
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <AppWrapper />
   </StrictMode>,
 )

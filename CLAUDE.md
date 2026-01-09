@@ -97,6 +97,16 @@ await graph.invoke(state)
 await langfuseService.flush()
 ```
 
+## Mode Demo (presentations client)
+
+Pour creer une demo interactive avec fausses donnees (sans backend) :
+
+1. Creer `apps/web/.env` avec `VITE_DEMO_MODE=true`
+2. Lancer `cd apps/web && bun run dev`
+3. Voir `apps/web/DEMO.md` pour la documentation complete
+
+Structure : `apps/web/src/demo/` contient le systeme de mock data et hooks.
+
 ## A eviter
 
 - class-validator (utiliser Zod)
