@@ -1,0 +1,40 @@
+# Dependencies (installed inside Docker)
+node_modules
+
+# Build outputs (built inside Docker)
+dist
+build
+.docker-build
+
+# Environment files (secrets)
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# CI/CD
+.github
+
+# Python scripts (not needed in Docker)
+scripts/python
+
+# Testing
+coverage
+
+# Docker files
+docker-compose*.yml
+
+# Misc
+*.log
+.DS_Store
+.cache
+uploads
