@@ -1,25 +1,39 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-  server: {
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
+export default defineConfig(({ mode }) => {
+  // Load env from monorepo root
+  const envDir = path.resolve(__dirname, '../..')
+  const env = loadEnv(mode, envDir, '')
+
+  // Configurable ports via .env
+  const frontendPort = parseInt(env.VITE_PORT || '5173', 10)
+  const backendPort = parseInt(env.PORT || '3000', 10)
+  const backendTarget = `http://localhost:${backendPort}`
+
+  return {
+    plugins: [react()],
+    envDir,
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
       },
-      '/trpc': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
+    },
+    server: {
+      port: frontendPort,
+      host: true,
+      allowedHosts: true,
+      proxy: {
+        '/api': {
+          target: backendTarget,
+          changeOrigin: true,
+        },
+        '/trpc': {
+          target: backendTarget,
+          changeOrigin: true,
+        },
       },
     },
-  },
+  }
 })

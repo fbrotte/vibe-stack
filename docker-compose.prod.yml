@@ -55,8 +55,8 @@ services:
       context: .
       dockerfile: Dockerfile.web
       args:
-        VITE_API_URL: ${VITE_API_URL:-https://example.com}
-        VITE_TRPC_URL: ${VITE_TRPC_URL:-https://example.com/trpc}
+        VITE_API_URL: ${VITE_API_URL:-/api}
+        VITE_TRPC_URL: ${VITE_TRPC_URL:-/trpc}
     restart: unless-stopped
     deploy:
       resources:

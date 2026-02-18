@@ -31,6 +31,32 @@ export class TrpcRouter implements OnApplicationBootstrap {
   }
 
   async applyMiddleware(app: INestApplication) {
+    // Middleware to prevent double Transfer-Encoding: chunked
+    // when going through a reverse proxy (Caddy). Without this,
+    // tRPC streaming via httpBatchStreamLink causes 502 errors.
+    app.use('/trpc', (req: any, res: any, next: any) => {
+      const originalWrite = res.write.bind(res)
+      const originalEnd = res.end.bind(res)
+      let headersSent = false
+
+      res.write = function (chunk: any, ...args: any[]) {
+        if (!headersSent) {
+          res.removeHeader('Transfer-Encoding')
+          headersSent = true
+        }
+        return originalWrite(chunk, ...args)
+      }
+
+      res.end = function (chunk: any, ...args: any[]) {
+        if (!headersSent) {
+          res.removeHeader('Transfer-Encoding')
+        }
+        return originalEnd(chunk, ...args)
+      }
+
+      next()
+    })
+
     app.use(
       '/trpc',
       trpcExpress.createExpressMiddleware({

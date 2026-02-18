@@ -26,9 +26,9 @@ async function bootstrap() {
   const configService = app.get(ConfigService)
   const port = configService.get('PORT', 3000)
 
-  // CORS
+  // CORS - origin: true accepts all origins in dev (local-services via Caddy or direct)
   app.enableCors({
-    origin: ['http://localhost:5173'],
+    origin: true,
     credentials: true,
   })
 

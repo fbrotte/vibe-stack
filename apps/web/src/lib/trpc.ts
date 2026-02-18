@@ -49,11 +49,14 @@ async function getValidToken(): Promise<string | null> {
   return accessToken
 }
 
+// tRPC base URL — relative for local-services (Caddy), absolute otherwise
+const TRPC_URL = import.meta.env.VITE_TRPC_URL || '/trpc'
+
 export function createTrpcClient() {
   return trpc.createClient({
     links: [
       httpBatchLink({
-        url: '/trpc',
+        url: TRPC_URL,
         async headers() {
           const token = await getValidToken()
           return token

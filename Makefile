@@ -46,8 +46,9 @@ dev-web: ## Start frontend only
 	@echo "Starting web server..."
 	@cd apps/web && bun run dev
 
-docker-up: ## Start base services (postgres + redis)
+docker-up: ## Start base services (postgres + redis) — fallback if not using local-services
 	@echo "Starting base Docker services..."
+	@echo "Tip: If using ~/Dev/local-services, run 'cd ~/Dev/local-services && make up' instead"
 	docker-compose up -d
 	@echo "Base services started"
 
