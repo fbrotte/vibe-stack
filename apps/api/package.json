@@ -61,8 +61,6 @@
     "@vitest/coverage-v8": "^4.0.14",
     "eslint": "^9.18.0",
     "supertest": "^7.1.4",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.2",
     "vitest": "^4.0.14"
   }

@@ -4,6 +4,8 @@
   "sourceRoot": "src",
   "entryFile": "apps/api/src/main",
   "compilerOptions": {
+    "builder": "swc",
+    "typeCheck": false,
     "deleteOutDir": true,
     "tsConfigPath": "apps/api/tsconfig.json",
     "assets": [],
