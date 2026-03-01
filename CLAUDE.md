@@ -125,6 +125,8 @@ Pour que le projet soit accessible via `{projet}.localhost` avec le reverse prox
 
 ## Deployment production
 
+**Configuration** : voir `deploy.json` a la racine du projet (SSH, health check, docker, scripts fixes).
+
 ### Pattern standard
 
 1. **`docker-compose.prod.yml`** : API + Web connectes au network `server-infra`
