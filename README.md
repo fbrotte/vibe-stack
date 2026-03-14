@@ -1,34 +1,6 @@
-# Template Dev
+# Vibe Stack
 
-Full-stack TypeScript/Python monorepo template optimized for rapid development with AI coding assistants.
-
-## Quick Start
-
-```bash
-git clone <your-repo>
-cd my-project
-make setup
-make dev
-```
-
-Le `make setup` crée automatiquement le fichier `.env` avec :
-
-- `COMPOSE_PROJECT_NAME` basé sur le nom du dossier (isolation Docker entre projets)
-- Secrets JWT générés aléatoirement
-
-The application will be available at:
-
-- Frontend: http://localhost:5173
-- API: http://localhost:3000/api
-- Swagger Docs: http://localhost:3000/api/docs
-- tRPC: http://localhost:3000/trpc
-
-## Default Credentials
-
-After seeding the database:
-
-- Admin: `admin@example.com` / `Admin123!`
-- User: `user@example.com` / `User123!`
+Full-stack TypeScript monorepo template.
 
 ## Stack
 
@@ -36,39 +8,42 @@ After seeding the database:
 - **Frontend**: React + Vite + TailwindCSS + shadcn/ui
 - **Backend**: NestJS + tRPC + Prisma + PostgreSQL
 - **Validation**: Zod (shared schemas)
-- **AI** (optional): LiteLLM + Langfuse
+
+## Quick Start
+
+```bash
+# 1. Create repo from this template on GitHub
+# 2. Clone and install
+bun install
+
+# 3. Setup environment
+cp .env.example .env
+# Edit .env with your values
+
+# 4. Run migrations and seed
+bunx prisma migrate dev
+bunx prisma db seed
+
+# 5. Start dev servers (API + Web)
+bun run dev
+```
 
 ## Project Structure
 
 ```
-.
 ├── apps/
-│   ├── web/                    # React + Vite frontend
-│   └── api/                    # NestJS backend
+│   ├── web/          # React + Vite frontend
+│   └── api/          # NestJS backend
 ├── packages/
-│   └── shared/                 # Zod schemas + shared types
-├── scripts/
-│   └── python/                 # Python standalone scripts
-├── prisma/                     # Prisma schema and migrations
-├── infrastructure/             # Docker configs
-├── docker-compose.yml
-├── Makefile
-└── CLAUDE.md                   # AI assistant instructions
+│   └── shared/       # Zod schemas + shared types
+├── prisma/           # Schema and migrations
+├── .flow/            # Project identity and tracking
+└── CLAUDE.md         # AI assistant instructions
 ```
 
-## Features
+## Default Credentials
 
-- **Auth**: JWT access tokens + refresh tokens with role-based access (USER/ADMIN)
-- **tRPC**: Type-safe API with automatic type inference
-- **Optional services**: LiteLLM, Langfuse, BullMQ queues
-
-## Commands
-
-Run `make help` to see all available commands.
-
-## Development
-
-See [CLAUDE.md](./CLAUDE.md) for detailed conventions, architecture patterns, and AI module documentation.
+After seeding: `admin@example.com` / `Admin123!`
 
 ## License
 
