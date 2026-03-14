@@ -1,1 +1,14 @@
+# Block direct commits on main and develop (merges allowed)
+branch=$(git branch --show-current)
+if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
+  if [ ! -f .git/MERGE_HEAD ]; then
+    echo ""
+    echo "Commits directs sur '$branch' interdits."
+    echo "Creer une branche feature/ ou fix/ depuis develop (ou hotfix/ depuis main)."
+    echo "Utiliser un worktree : git worktree add ../feature-name develop"
+    echo ""
+    exit 1
+  fi
+fi
+
 bunx lint-staged
