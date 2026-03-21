@@ -3,6 +3,9 @@ import type { CanActivate, ExecutionContext } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { AuthService } from '../auth/auth.service'
 
+// NOTE: JWT is passed via query param because EventSource doesn't support custom headers.
+// The token will appear in server/proxy access logs. For production, consider short-lived
+// SSE-specific tokens or ensure log redaction is in place.
 @Injectable()
 export class SseAuthGuard implements CanActivate {
   constructor(

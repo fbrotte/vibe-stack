@@ -9,6 +9,8 @@ interface MessageEvent {
   data: string
 }
 
+// NOTE: Events are broadcast to ALL connected users (single Subject).
+// For per-user filtering, replace with a Map<userId, Subject> if needed.
 @Injectable()
 export class SseService implements OnModuleInit {
   private readonly logger = new Logger(SseService.name)

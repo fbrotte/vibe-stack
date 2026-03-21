@@ -6,7 +6,16 @@ import { PrismaClient } from '@prisma/client'
 type MutationInfo = { model: string; action: string; id: string }
 type MutationListener = (info: MutationInfo) => void
 
-const MUTATION_ACTIONS = ['create', 'update', 'delete', 'upsert'] as const
+const MUTATION_ACTIONS = [
+  'create',
+  'update',
+  'delete',
+  'upsert',
+  'createMany',
+  'updateMany',
+  'deleteMany',
+] as const
+const BATCH_ACTIONS = ['createMany', 'updateMany', 'deleteMany'] as const
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
@@ -42,7 +51,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   /**
    * Install a Prisma query extension that intercepts mutations and fans out to
-   * all registered listeners. Uses $extends (Prisma 5+) instead of $use.
+   * all registered listeners. Uses $extends (Prisma 6+) instead of deprecated $use.
    *
    * The extended client is assigned back to `this` via Object.assign so the
    * existing service reference keeps working throughout the application.
@@ -59,8 +68,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
               MUTATION_ACTIONS.includes(operation as (typeof MUTATION_ACTIONS)[number]) &&
               model
             ) {
-              const id = (result as Record<string, unknown>)?.id?.toString() ?? ''
-              const action = operation === 'upsert' ? 'update' : operation
+              const isBatch = (BATCH_ACTIONS as readonly string[]).includes(operation)
+              const action = operation === 'upsert' ? 'update' : operation.replace('Many', '')
+              const id = isBatch ? '' : ((result as Record<string, unknown>)?.id?.toString() ?? '')
               self.notifyMutationListeners({ model, action, id })
             }
             return result
