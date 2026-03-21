@@ -26,10 +26,6 @@ coverage/
 *~
 .DS_Store
 
-# Prisma
-prisma/migrations/**
-!prisma/migrations/.gitkeep
-
 # Worktrees
 .worktrees/
 
