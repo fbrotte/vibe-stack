@@ -26,6 +26,6 @@ import { TrpcModule } from '../../trpc/trpc.module'
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthTrpc, JwtStrategy],
-  exports: [AuthService, AuthTrpc, JwtStrategy, PassportModule],
+  exports: [AuthService, AuthTrpc, JwtStrategy, PassportModule, JwtModule],
 })
 export class AuthModule {}
