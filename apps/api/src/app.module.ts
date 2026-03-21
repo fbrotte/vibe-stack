@@ -15,6 +15,7 @@ import { LangfuseModule } from './modules/langfuse'
 import { PythonModule } from './modules/python/python.module'
 import { LoggerModule } from './modules/logger/logger.module'
 // import { QueueModule } from './modules/queue/queue.module'; // Uncomment to enable
+import { SseModule } from './modules/sse/sse.module'
 import { TrpcModule } from './trpc/trpc.module'
 
 @Module({
@@ -45,6 +46,7 @@ import { TrpcModule } from './trpc/trpc.module'
     AiModule,
     PythonModule,
     // QueueModule, // Uncomment to enable
+    SseModule,
     TrpcModule,
   ],
   controllers: [AppController],
