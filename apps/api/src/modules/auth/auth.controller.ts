@@ -3,8 +3,8 @@ import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody, ApiResponse } from '@nes
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import {
-  LoginDto,
-  RegisterDto,
+  SendMagicLinkDto,
+  VerifyMagicLinkDto,
   RefreshTokenDto,
   AuthResponseDto,
   ApiErrorDto,
@@ -15,24 +15,23 @@ import {
 export class AuthController {
   constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
-  @Post('register')
-  @ApiOperation({ summary: 'Register a new user' })
-  @ApiBody({ type: RegisterDto })
-  @ApiResponse({ status: 201, type: AuthResponseDto })
+  @Post('magic-link')
+  @ApiOperation({ summary: 'Send a magic link by email' })
+  @ApiBody({ type: SendMagicLinkDto })
+  @ApiResponse({ status: 201, description: 'Magic link sent' })
   @ApiResponse({ status: 400, description: 'Validation error', type: ApiErrorDto })
-  @ApiResponse({ status: 409, description: 'User already exists', type: ApiErrorDto })
-  async register(@Body() body: RegisterDto) {
-    return this.authService.register(body)
+  async sendMagicLink(@Body() body: SendMagicLinkDto) {
+    return this.authService.sendMagicLink(body.email)
   }
 
-  @Post('login')
-  @ApiOperation({ summary: 'Login with email and password' })
-  @ApiBody({ type: LoginDto })
+  @Post('verify')
+  @ApiOperation({ summary: 'Verify a magic link token' })
+  @ApiBody({ type: VerifyMagicLinkDto })
   @ApiResponse({ status: 201, type: AuthResponseDto })
   @ApiResponse({ status: 400, description: 'Validation error', type: ApiErrorDto })
-  @ApiResponse({ status: 401, description: 'Invalid credentials', type: ApiErrorDto })
-  async login(@Body() body: LoginDto) {
-    return this.authService.login(body)
+  @ApiResponse({ status: 401, description: 'Invalid or expired token', type: ApiErrorDto })
+  async verifyMagicLink(@Body() body: VerifyMagicLinkDto) {
+    return this.authService.verifyMagicLink(body.token)
   }
 
   @Get('dev/login-as')
