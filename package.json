@@ -39,6 +39,7 @@
     "@swc/cli": "^0.7.9",
     "@swc/core": "^1.15.8",
     "@types/node": "^22.10.5",
+    "@types/nodemailer": "^7.0.11",
     "@vitest/coverage-v8": "^4.0.14",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^10.0.0",
@@ -50,5 +51,8 @@
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.48.0",
     "vitest": "^4.0.14"
+  },
+  "dependencies": {
+    "nodemailer": "^8.0.4"
   }
 }
