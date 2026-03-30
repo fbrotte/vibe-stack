@@ -8,6 +8,7 @@ import { AuthTrpc } from './auth.trpc'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { UsersModule } from '../users/users.module'
 import { TrpcModule } from '../../trpc/trpc.module'
+import { MailModule } from '../mail/mail.module'
 
 @Module({
   imports: [
@@ -22,10 +23,11 @@ import { TrpcModule } from '../../trpc/trpc.module'
       }),
     }),
     UsersModule,
+    MailModule,
     forwardRef(() => TrpcModule),
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthTrpc, JwtStrategy],
-  exports: [AuthService, AuthTrpc, JwtStrategy, PassportModule],
+  exports: [AuthService, AuthTrpc, JwtStrategy, PassportModule, JwtModule],
 })
 export class AuthModule {}

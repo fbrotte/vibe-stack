@@ -6,6 +6,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { HubLogBuffer } from './hub-log-buffer'
 
+const HUB_URL = 'https://hub.fbrotte.fr'
+
 function readFlowConfig(): { hubServiceKey?: string } | null {
   // Walk up from cwd to find .flow/project.json (handles monorepo apps/api/ subdirectory)
   let dir = process.cwd()
@@ -50,7 +52,7 @@ export class LoggerService implements NestLoggerService {
     // Hub log buffer (conditional — only if hubServiceKey is present in .flow/project.json)
     const flowConfig = readFlowConfig()
     if (flowConfig?.hubServiceKey) {
-      const hubUrl = process.env.HUB_URL ?? 'http://hub.localhost'
+      const hubUrl = process.env.HUB_URL ?? HUB_URL
       this.hubBuffer = new HubLogBuffer(hubUrl, flowConfig.hubServiceKey)
     }
   }

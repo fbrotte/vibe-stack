@@ -1,14 +1,41 @@
+import { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { DEMO_MODE } from './demo'
-import { useDemo } from './demo/DemoProvider'
-import { useIsAuthenticated, useAuthLoading } from './stores/auth.store'
+import { useIsAuthenticated, useAuthLoading, useAccessToken } from './stores/auth.store'
+import { useSseStore } from './stores/sse.store'
+import { useEntityInvalidation } from './hooks/useEntityInvalidation'
+import { usePreferencesSync } from './hooks/use-preferences-sync'
+import AppLayout from './components/layout/AppLayout'
 import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
+import VerifyPage from './pages/VerifyPage'
 import DashboardPage from './pages/DashboardPage'
 import SettingsPage from './pages/SettingsPage'
 
 // ============================================================================
-// ROUTES PROTÉGÉES - MODE NORMAL (avec Zustand)
+// SSE MANAGER
+// ============================================================================
+
+function SseManager() {
+  const accessToken = useAccessToken()
+  const isAuthenticated = useIsAuthenticated()
+  useEntityInvalidation()
+  usePreferencesSync()
+
+  useEffect(() => {
+    if (isAuthenticated && accessToken) {
+      useSseStore.getState().connect(accessToken)
+    } else {
+      useSseStore.getState().disconnect()
+    }
+    return () => {
+      useSseStore.getState().disconnect()
+    }
+  }, [isAuthenticated, accessToken])
+
+  return null
+}
+
+// ============================================================================
+// ROUTE GUARDS
 // ============================================================================
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -23,7 +50,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     )
   }
 
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />
+  return isAuthenticated ? <AppLayout>{children}</AppLayout> : <Navigate to="/login" />
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
@@ -42,102 +69,49 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 // ============================================================================
-// ROUTES PROTÉGÉES - MODE DÉMO (avec DemoProvider)
-// ============================================================================
-
-function DemoProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useDemo()
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />
-}
-
-function DemoPublicRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useDemo()
-  return isAuthenticated ? <Navigate to="/dashboard" /> : <>{children}</>
-}
-
-// ============================================================================
 // APP
 // ============================================================================
 
 function App() {
-  // En mode démo, utilise les routes démo
-  if (DEMO_MODE) {
-    return (
+  return (
+    <>
+      <SseManager />
       <Routes>
         <Route
           path="/login"
           element={
-            <DemoPublicRoute>
+            <PublicRoute>
               <LoginPage />
-            </DemoPublicRoute>
+            </PublicRoute>
           }
         />
         <Route
-          path="/register"
+          path="/auth/verify"
           element={
-            <DemoPublicRoute>
-              <RegisterPage />
-            </DemoPublicRoute>
+            <PublicRoute>
+              <VerifyPage />
+            </PublicRoute>
           }
         />
         <Route
           path="/dashboard"
           element={
-            <DemoProtectedRoute>
+            <ProtectedRoute>
               <DashboardPage />
-            </DemoProtectedRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/settings"
           element={
-            <DemoProtectedRoute>
+            <ProtectedRoute>
               <SettingsPage />
-            </DemoProtectedRoute>
+            </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/dashboard" />} />
       </Routes>
-    )
-  }
-
-  // Mode normal
-  return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <PublicRoute>
-            <RegisterPage />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <SettingsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/" element={<Navigate to="/dashboard" />} />
-    </Routes>
+    </>
   )
 }
 

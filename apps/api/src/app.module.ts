@@ -11,16 +11,19 @@ import { SettingsModule } from './modules/settings/settings.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { UsersModule } from './modules/users/users.module'
 import { AiModule } from './modules/ai/ai.module'
-import { LangfuseModule } from './modules/langfuse'
 import { PythonModule } from './modules/python/python.module'
 import { LoggerModule } from './modules/logger/logger.module'
 // import { QueueModule } from './modules/queue/queue.module'; // Uncomment to enable
+import { SseModule } from './modules/sse/sse.module'
 import { TrpcModule } from './trpc/trpc.module'
+import { MailModule } from './modules/mail/mail.module'
+import authConfig from './config/auth.config'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [authConfig],
       validate: (config) => {
         try {
           return EnvSchema.parse(config)
@@ -41,10 +44,11 @@ import { TrpcModule } from './trpc/trpc.module'
     SettingsModule,
     AuthModule,
     UsersModule,
-    LangfuseModule,
     AiModule,
     PythonModule,
     // QueueModule, // Uncomment to enable
+    SseModule,
+    MailModule,
     TrpcModule,
   ],
   controllers: [AppController],
